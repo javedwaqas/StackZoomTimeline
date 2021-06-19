@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>StackZoomTimeline Demonstration</title>
+        <link rel="stylesheet" href="stackzoom.css" type="text/css" media="screen">
+        <script type="text/javascript" src="http://www.google.com/jsapi" charset="utf-8"></script>
+        <script type="text/javascript" src="raphael.js" charset="utf-8"></script>
+	    <script type="text/javascript" src="stackzoom.js" charset="utf-8"></script>
+	    <script type="text/javascript">
+
+	    	// Load the Google API
+		    google.load("visualization", "1"); 
+       
+      		// Set callback to run when API is loaded 
+      		google.setOnLoadCallback(initialize);  
+
+	        function initialize() {
+
+	            // Retrieve a Google document 
+	            var query = new google.visualization.Query('http://spreadsheets.google.com/pub?key=tM2X47jMx73IeeeNjJGfOEg&output=html'); 
+	            query.setQuery('select A, B, E, C'); 
+	           
+	            // Send the query with a callback function 
+	            query.send(drawVisualization);
+        	}
+
+	        function gup(name) {
+		        name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+	          	var regexS = "[\\?&]" + name + "=([^&#]*)";
+	          	var regex = new RegExp(regexS);
+	          	var results = regex.exec(window.location.href);
+	          	if (results == null) return "";
+	          	else return results[1];
+	        }	
+        
+      		function drawVisualization(response) {
+
+          		// Handle errors
+      			if (response.isError()) { 
+                	alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage()); 
+                	return; 
+            	}
+
+            	// Extract data table from result
+            	var data = response.getDataTable();
+      	        
+        		// Instantiate our timeline object 
+        		var vis = new pivot.StackZoomTimeline(document.getElementById('timeline')); 
+         
+        		// Draw the visualization with the data
+        		vis.draw(data, {width: 1200, height: 600, normalize: false, visual: gup('visual')}); 
+      		}
+      	 
+  		</script>     
+    </head>
+    <body>
+		
+		<div class="body">
+			<h1 class="header">Stack Zooming: Stock Market Data</h1>
+				
+			<div class="nav">
+				<table border="0" width="100%">
+					<tr>
+						<td align="left">
+							<a href="stackzoom-randomized.html">Previous</a> | 
+							<a href="index.html">Index</a> | 
+							<a href="stackzoom-randomized.html">Next</a>
+						</td>
+						<td align="right">
+							Visual representation:
+							<a href="stackzoom-stockmarket.html?visual=line">Line Graph</a> |	
+							<a href="stackzoom-stockmarket.html?visual=filled">Filled Area Graph</a> | 				
+							<a href="stackzoom-stockmarket.html?visual=horizon">Horizon Graph</a> |	
+							<a href="stackzoom-stockmarket.html?visual=braided">Braided Graph</a>
+						</td>
+					</tr>
+				</table>	
+			</div>
+
+			<div>
+				<b>Instructions:</b> Use the mouse to create focus regions in the time-series data.  Dragging a focus region will pan its position.
+				Clicking on the cross will delete the focus region and any children.
+			</div>
+			
+			<div id="timeline"></div>
+			
+			<div>
+				<b>Source:</b> Stock market index data for the period of January 1986 to December 1997.  The raw data (in spreadsheet form) is available 
+				<a href="http://spreadsheets.google.com/pub?key=tM2X47jMx73IeeeNjJGfOEg&output=html">here</a>.
+			</div>
+						
+			<div class="source">
+				<b>Example</b>
+<div style="overflow:auto; height=200; width=100%;">
+<pre style='color:#000000;background:#ffffff;'><span style='color:#004a43; '>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "</span><span style='color:#5555dd; '>http://www.w3.org/TR/html4/strict.dtd</span><span style='color:#004a43; '>"></span>
+<span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>html</span><span style='color:#274796; '> </span><span style='color:#074726; '>lang</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"en"</span><span style='color:#a65700; '>></span>
+    <span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>head</span><span style='color:#a65700; '>></span>
+        <span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>meta</span><span style='color:#274796; '> </span><span style='color:#074726; '>http-equiv</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"Content-Type"</span><span style='color:#274796; '> </span><span style='color:#074726; '>content</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"text/html; charset=utf-8"</span><span style='color:#a65700; '>></span>
+        <span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>title</span><span style='color:#a65700; '>></span>StackZoomTimeline Demonstration<span style='color:#a65700; '>&lt;/</span><span style='color:#800000; font-weight:bold; '>title</span><span style='color:#a65700; '>></span>
+        <span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>script type="text/javascript" src="http://www.google.com/jsapi" charset="utf-8"</span><span style='color:#a65700; '>></span><span style='color:#a65700; '>&lt;/</span><span style='color:#800000; font-weight:bold; '>script</span><span style='color:#a65700; '>></span> 
+        <span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>script type="text/javascript" src="raphael.js" charset="utf-8"</span><span style='color:#a65700; '>></span><span style='color:#a65700; '>&lt;/</span><span style='color:#800000; font-weight:bold; '>script</span><span style='color:#a65700; '>></span>
+        <span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>script type="text/javascript" src="stackzoom.js" charset="utf-8"</span><span style='color:#a65700; '>></span><span style='color:#a65700; '>&lt;/</span><span style='color:#800000; font-weight:bold; '>script</span><span style='color:#a65700; '>></span>
+        <span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>script type="text/javascript"</span><span style='color:#a65700; '>></span>
+
+            <span style='color:#696969; '>// Load the Google API</span>
+            google<span style='color:#808030; '>.</span>load<span style='color:#808030; '>(</span><span style='color:#0000e6; '>"visualization"</span><span style='color:#808030; '>,</span> <span style='color:#0000e6; '>"1"</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span> 
+       
+            <span style='color:#696969; '>// Set callback to run when API is loaded </span>
+            google<span style='color:#808030; '>.</span>setOnLoadCallback<span style='color:#808030; '>(</span>initialize<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>  
+
+            <span style='color:#800000; font-weight:bold; '>function</span> initialize<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span>
+
+                <span style='color:#696969; '>// Retrieve a Google document </span>
+                <span style='color:#800000; font-weight:bold; '>var</span> query <span style='color:#808030; '>=</span> <span style='color:#800000; font-weight:bold; '>new</span> google<span style='color:#808030; '>.</span>visualization<span style='color:#808030; '>.</span>Query<span style='color:#808030; '>(</span><span style='color:#0000e6; '>'http://spreadsheets.google.com/pub?key=tM2X47jMx73IeeeNjJGfOEg&amp;output=html'</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span> 
+                query<span style='color:#808030; '>.</span>setQuery<span style='color:#808030; '>(</span><span style='color:#0000e6; '>'select A, B'</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span> 
+               
+                <span style='color:#696969; '>// Send the query with a callback function </span>
+                query<span style='color:#808030; '>.</span>send<span style='color:#808030; '>(</span>drawVisualization<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+            <span style='color:#800080; '>}</span>
+        
+            <span style='color:#800000; font-weight:bold; '>function</span> drawVisualization<span style='color:#808030; '>(</span>response<span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span>
+
+                <span style='color:#696969; '>// Handle errors</span>
+                <span style='color:#800000; font-weight:bold; '>if</span> <span style='color:#808030; '>(</span>response<span style='color:#808030; '>.</span>isError<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span> 
+                    alert<span style='color:#808030; '>(</span><span style='color:#0000e6; '>'Error in query: '</span> <span style='color:#808030; '>+</span> response<span style='color:#808030; '>.</span>getMessage<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span> <span style='color:#808030; '>+</span> <span style='color:#0000e6; '>' '</span> <span style='color:#808030; '>+</span> response<span style='color:#808030; '>.</span>getDetailedMessage<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span> 
+                    <span style='color:#800000; font-weight:bold; '>return</span><span style='color:#800080; '>;</span> 
+                <span style='color:#800080; '>}</span>
+
+                <span style='color:#696969; '>// Extract data table from result</span>
+                <span style='color:#800000; font-weight:bold; '>var</span> data <span style='color:#808030; '>=</span> response<span style='color:#808030; '>.</span>getDataTable<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+                  
+                <span style='color:#696969; '>// Instantiate our timeline object </span>
+                <span style='color:#800000; font-weight:bold; '>var</span> vis <span style='color:#808030; '>=</span> <span style='color:#800000; font-weight:bold; '>new</span> pivot<span style='color:#808030; '>.</span>StackZoomTimeline<span style='color:#808030; '>(</span>document<span style='color:#808030; '>.</span>getElementById<span style='color:#808030; '>(</span><span style='color:#0000e6; '>'timeline'</span><span style='color:#808030; '>)</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span> 
+         
+                <span style='color:#696969; '>// Draw the visualization with the data</span>
+                vis<span style='color:#808030; '>.</span>draw<span style='color:#808030; '>(</span>data<span style='color:#808030; '>,</span> <span style='color:#800080; '>{</span> width<span style='color:#800080; '>:</span> <span style='color:#008c00; '>1200</span><span style='color:#808030; '>,</span> height<span style='color:#800080; '>:</span> <span style='color:#008c00; '>600</span><span style='color:#800080; '>}</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span> 
+            <span style='color:#800080; '>}</span>
+        <span style='color:#a65700; '>&lt;/</span><span style='color:#800000; font-weight:bold; '>script</span><span style='color:#a65700; '>></span>     
+    <span style='color:#a65700; '>&lt;/</span><span style='color:#800000; font-weight:bold; '>head</span><span style='color:#a65700; '>></span>
+    <span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>body</span><span style='color:#a65700; '>></span>
+        <span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>h1</span><span style='color:#274796; '> </span><span style='color:#074726; '>class</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"header"</span><span style='color:#a65700; '>></span>Stack Zooming: Stock Market Data<span style='color:#a65700; '>&lt;/</span><span style='color:#800000; font-weight:bold; '>h1</span><span style='color:#a65700; '>></span>                
+        <span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>div</span><span style='color:#274796; '> </span><span style='color:#074726; '>id</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"timeline"</span><span style='color:#a65700; '>></span><span style='color:#a65700; '>&lt;/</span><span style='color:#800000; font-weight:bold; '>div</span><span style='color:#a65700; '>></span>
+    <span style='color:#a65700; '>&lt;/</span><span style='color:#800000; font-weight:bold; '>body</span><span style='color:#a65700; '>></span>
+<span style='color:#a65700; '>&lt;/</span><span style='color:#800000; font-weight:bold; '>html</span><span style='color:#a65700; '>></span>
+</pre></div>
+			</div>
+			
+			<div class="footer">
+				Created by Waqas Javed and Niklas Elmqvist (<a href="http://www.purdue.edu">Purdue University</a>).
+			</div>
+		</div>
+		        
+    </body>
+</html>
+

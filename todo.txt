@@ -1,0 +1,62 @@
+---------------------------------------------------------------------
+TODO - StackZooming in JavaScript
+---------------------------------------------------------------------
+
+Remaining core features:
+[X] Add focus strips in right position (sort strips during draw at layout)
+[X] Use color-coding to show mapping between selection areas and strips
+[X] Recycle and randomize colors for robustness
+[X] Highlight all children while dragging and while hovering 
+[X] Change cursor to communicate modes of interaction
+[ ] Draw data series labels
+[ ] Drill-down to get data value (while hovering) -- need to use invisible shapes for this
+[ ] Value (y-axis) and time (x-axis) labels
+
+Architecture and design:
+[ ] All selection areas should be defined in the context of their parents
+[ ] Use time axis to place times properly (doubtful???)
+[X] Clean up the globals (consolidate or remove) 
+[X] Extract visual representation from the stack zoom technique
+
+Interaction:
+[ ] Real-time updating of pan areas (may need to restructure drawing)
+[ ] Allow minimizing and maximizing areas
+[N] Skip panning and just allow for deletion and creation?
+[X] Allow for deleting focus strips (click on close box)
+[X] Drag selection areas to pan children
+[X] Add and remove document mouse handlers inside the mousedown and mouseup functions
+
+Decorations:
+[ ] Textual legend
+[ ] Minor and major tick marks
+[ ] Rulers
+
+Visualization techniques:
+[ ] Make each of the visualization techniques a stand-alone GVis component
+[X] Multiple time series (small multiples)
+[X] Superimposed line graphs
+[X] Horizon graphs
+[X] Braided graphs 
+[N] Stacked line graphs
+
+Visual representation:
+[ ] Animation for adding new layers and strips (???)
+[ ] Add other correlation graphics?
+[ ] Split curve into line and filled area
+[ ] Allow for passing color array as option
+[X] Add selection areas for children
+[X] Allow for color control for the graphics using options object
+
+Webpage:
+[X] Stylesheets for the web pages
+[X] Code example (syntax highlighted) on demo pages
+
+Bugs:
+[ ] Normalized ranges for the horizon graph
+[ ] Remove flank lines at the endpoints (for line)
+[ ] Selection areas seem to increase in size when panning (look at small data sizes) 
+[X] Look into the return values of event handlers (to figure out what is consuming events)
+[X] Interference between pan handler and select handler
+[N] Possibly combine pan and select handlers to avoid interference
+[N] Event propagation (bubbling?) causing several handlers to be called --> interference?
+[X] Selection areas have disappeared

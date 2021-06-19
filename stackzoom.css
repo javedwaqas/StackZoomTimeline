@@ -1,0 +1,42 @@
+body {
+    background: #eeeeee;
+    color: #000;
+    font: 14px/134% "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
+}
+#timeline {
+    height: 600px;
+    width: 1200px;
+}
+a {
+	text-decoration: none;
+	color: gray;
+}
+h1 {
+	font-size: 24px; 
+}
+.body, .foot {	
+  	padding: 10px;
+  	border: 1px solid;
+  	border-color: lightgray;
+  	width: 1200px;
+  	margin: auto;
+  	background-color: white;
+}
+.footer {
+	font-size: 11px; 
+}
+.source {
+	margin-top: 8px;
+	margin-bottom: 8px;
+	border: 1px solid;
+	border-color: lightgray;
+	padding: 4px;
+}
+.nav { 
+	margin-top: 8px;
+	margin-bottom: 8px;
+	padding: 4px;	
+	border: 1px solid;
+	border-color: lightgray; 
+}
+	

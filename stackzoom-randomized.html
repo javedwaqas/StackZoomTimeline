@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>StackZoomTimeline Demonstration</title>
+        <link rel="stylesheet" href="stackzoom.css" type="text/css" media="screen">
+        <script type="text/javascript" src="http://www.google.com/jsapi" charset="utf-8"></script> 
+        <script type="text/javascript" src="raphael.js" charset="utf-8"></script>
+	    <script type="text/javascript" src="stackzoom.js" charset="utf-8"></script>
+	    <script type="text/javascript">
+
+	    	// Load the Google API
+		    google.load("visualization", "1"); 
+       
+      		// Set callback to run when API is loaded 
+      		google.setOnLoadCallback(drawVisualization);  
+
+        	Math.signum = function(x) {
+        		if (x < 0) return -1;
+        		else if (x > 0) return 1;
+        		else return 0; 
+        	}
+        	
+        	function generateData(numCols, size, amplitude, maxDelta) {
+      	        var data = new google.visualization.DataTable();
+              	data.addColumn('number', 'Time'); 
+              	var lastValue = new Array();
+              	var delta = new Array();
+              	for (var col = 0; col < numCols; col++) {
+	              	data.addColumn('number', 'Value' + col);
+	              	lastValue[col] = amplitude * Math.random() - amplitude / 2;
+	              	delta[col] = 0;
+              	} 
+              	data.addRows(size);
+              	for (var i = 0; i < data.getNumberOfRows(); i++) {
+              		data.setCell(i, 0, i);
+                  	for (col = 0; col < numCols; col++) {                  	
+              			delta[col] += amplitude * Math.random() - amplitude / 2;
+              			if (Math.abs(delta) > maxDelta) delta[col] = Math.signum(delta[col]) * maxDelta;
+              			var newValue = lastValue[col] + delta[col];
+                  		data.setCell(i, col + 1, newValue);
+	                  	lastValue[col] = newValue;
+                  	} 
+              	}
+              	return data;        		 
+        	}
+
+        	function generateSine(numCols, size, amplitude, periods) {
+      	        var data = new google.visualization.DataTable();
+              	data.addColumn('number', 'Time'); 
+              	for (var col = 0; col < numCols; col++) {
+	              	data.addColumn('number', 'Value' + col);
+              	} 
+              	var delta = periods * 2 * Math.PI / size;
+              	data.addRows(size);
+            	for (var i = 0; i < size; i++) {
+                	data.setCell(i, 0, i);
+                  	for (col = 0; col < numCols; col++) {                  	
+	                	data.setCell(i, col + 1, amplitude * Math.sin(i * delta + 2 * Math.PI / numCols * col)); 
+                  	} 
+            	}
+            	return data;             	 
+        	}
+
+        	function generateRamp(size, start, end) {
+            	var diff = end - start;
+            	var delta = diff / (size - 1);
+      	        var data = new google.visualization.DataTable();
+              	data.addColumn('number', 'Time'); 
+              	data.addColumn('number', 'Value'); 
+              	data.addRows(size);
+            	for (var i = 0; i < size; i++) {
+                	data.setCell(i, 0, i);
+                	data.setCell(i, 1, i * delta + start); 
+            	}
+            	return data; 
+        	}
+
+	        function gup(name) {
+		        name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+	          	var regexS = "[\\?&]" + name + "=([^&#]*)";
+	          	var regex = new RegExp(regexS);
+	          	var results = regex.exec(window.location.href);
+	          	if (results == null) return "";
+	          	else return results[1];
+	        }        	
+        
+      		function drawVisualization() {
+            	
+      			// Generate the data
+      	        //var data = generateRamp(5, -10, +10);
+      	        //var data = generateSine(3, 100, 10, 2);
+      	        var data = generateData(4, 200, 20, 15);
+      	        
+        		// Instantiate the timeline object 
+        		var vis = new pivot.StackZoomTimeline(document.getElementById('timeline')); 
+         
+        		// Draw the visualization
+        		vis.draw(data, {width: 1200, height: 600, normalize: false, visual: gup('visual')}); 
+      		}
+  		</script>     
+    </head>
+    <body>
+		
+		<div class="body">
+			<h1 class="header">Stack Zooming: Randomized Data</h1>
+				
+			<div class="nav">
+				<table border="0" width="100%">
+					<tr>
+						<td align="left">
+							<a href="stackzoom-stockmarket.html">Previous</a> | 
+							<a href="index.html">Index</a> | 
+							<a href="stackzoom-stockmarket.html">Next</a>
+						</td>
+						<td align="right">
+							Visual representation:
+							<a href="stackzoom-randomized.html?visual=line">Line Graph</a> |	
+							<a href="stackzoom-randomized.html?visual=filled">Filled Area Graph</a> | 				
+							<a href="stackzoom-randomized.html?visual=horizon">Horizon Graph</a> |	
+							<a href="stackzoom-randomized.html?visual=braided">Braided Graph</a>
+						</td>
+					</tr>
+				</table>					
+			</div>
+			
+			<div>
+				<b>Instructions:</b> Use the mouse to create focus regions in the time-series data.  Dragging a focus region will pan its position.
+				Clicking on the cross will delete the focus region and any children.
+			</div>
+			
+			<div id="timeline"></div>
+
+			<div>
+				<b>Source:</b> 200 random values (see generation code below).
+			</div>
+
+			<div class="source">
+				<b>Example</b>
+<pre style='color:#000000;background:#ffffff;'><span style='color:#004a43; '>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "</span><span style='color:#5555dd; '>http://www.w3.org/TR/html4/strict.dtd</span><span style='color:#004a43; '>"></span>
+<span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>html</span><span style='color:#274796; '> </span><span style='color:#074726; '>lang</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"en"</span><span style='color:#a65700; '>></span>
+    <span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>head</span><span style='color:#a65700; '>></span>
+        <span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>meta</span><span style='color:#274796; '> </span><span style='color:#074726; '>http-equiv</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"Content-Type"</span><span style='color:#274796; '> </span><span style='color:#074726; '>content</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"text/html; charset=utf-8"</span><span style='color:#a65700; '>></span>
+        <span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>title</span><span style='color:#a65700; '>></span>StackZoomTimeline Demonstration<span style='color:#a65700; '>&lt;/</span><span style='color:#800000; font-weight:bold; '>title</span><span style='color:#a65700; '>></span>
+        <span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>script type="text/javascript" src="http://www.google.com/jsapi" charset="utf-8"</span><span style='color:#a65700; '>></span><span style='color:#a65700; '>&lt;/</span><span style='color:#800000; font-weight:bold; '>script</span><span style='color:#a65700; '>></span> 
+        <span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>script type="text/javascript" src="raphael.js" charset="utf-8"</span><span style='color:#a65700; '>></span><span style='color:#a65700; '>&lt;/</span><span style='color:#800000; font-weight:bold; '>script</span><span style='color:#a65700; '>></span>
+        <span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>script type="text/javascript" src="stackzoom.js" charset="utf-8"</span><span style='color:#a65700; '>></span><span style='color:#a65700; '>&lt;/</span><span style='color:#800000; font-weight:bold; '>script</span><span style='color:#a65700; '>></span>
+        <span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>script type="text/javascript"</span><span style='color:#a65700; '>></span>
+
+            <span style='color:#696969; '>// Load the Google API</span>
+            google<span style='color:#808030; '>.</span>load<span style='color:#808030; '>(</span><span style='color:#0000e6; '>"visualization"</span><span style='color:#808030; '>,</span> <span style='color:#0000e6; '>"1"</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span> 
+       
+            <span style='color:#696969; '>// Set callback to run when API is loaded </span>
+            google<span style='color:#808030; '>.</span>setOnLoadCallback<span style='color:#808030; '>(</span>drawVisualization<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>  
+
+            Math<span style='color:#808030; '>.</span>signum <span style='color:#808030; '>=</span> <span style='color:#800000; font-weight:bold; '>function</span><span style='color:#808030; '>(</span>x<span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span>
+                <span style='color:#800000; font-weight:bold; '>if</span> <span style='color:#808030; '>(</span>x <span style='color:#808030; '>&lt;</span> <span style='color:#008c00; '>0</span><span style='color:#808030; '>)</span> <span style='color:#800000; font-weight:bold; '>return</span> <span style='color:#808030; '>-</span><span style='color:#008c00; '>1</span><span style='color:#800080; '>;</span>
+                <span style='color:#800000; font-weight:bold; '>else</span> <span style='color:#800000; font-weight:bold; '>if</span> <span style='color:#808030; '>(</span>x <span style='color:#808030; '>></span> <span style='color:#008c00; '>0</span><span style='color:#808030; '>)</span> <span style='color:#800000; font-weight:bold; '>return</span> <span style='color:#008c00; '>1</span><span style='color:#800080; '>;</span>
+                <span style='color:#800000; font-weight:bold; '>else</span> <span style='color:#800000; font-weight:bold; '>return</span> <span style='color:#008c00; '>0</span><span style='color:#800080; '>;</span> 
+            <span style='color:#800080; '>}</span>
+            
+            <span style='color:#800000; font-weight:bold; '>function</span> generateData<span style='color:#808030; '>(</span>size<span style='color:#808030; '>,</span> amplitude<span style='color:#808030; '>,</span> maxDelta<span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span>
+                  <span style='color:#800000; font-weight:bold; '>var</span> data <span style='color:#808030; '>=</span> <span style='color:#800000; font-weight:bold; '>new</span> google<span style='color:#808030; '>.</span>visualization<span style='color:#808030; '>.</span>DataTable<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+                  data<span style='color:#808030; '>.</span>addColumn<span style='color:#808030; '>(</span><span style='color:#0000e6; '>'number'</span><span style='color:#808030; '>,</span> <span style='color:#0000e6; '>'Time'</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span> 
+                  data<span style='color:#808030; '>.</span>addColumn<span style='color:#808030; '>(</span><span style='color:#0000e6; '>'number'</span><span style='color:#808030; '>,</span> <span style='color:#0000e6; '>'Value'</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span> 
+                  data<span style='color:#808030; '>.</span>addRows<span style='color:#808030; '>(</span>size<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+                  <span style='color:#800000; font-weight:bold; '>var</span> lastValue <span style='color:#808030; '>=</span> <span style='color:#008c00; '>0</span><span style='color:#800080; '>;</span>
+                  <span style='color:#800000; font-weight:bold; '>var</span> delta <span style='color:#808030; '>=</span> <span style='color:#008c00; '>0</span><span style='color:#800080; '>;</span>
+                  <span style='color:#800000; font-weight:bold; '>for</span> <span style='color:#808030; '>(</span><span style='color:#800000; font-weight:bold; '>var</span> i <span style='color:#808030; '>=</span> <span style='color:#008c00; '>0</span><span style='color:#800080; '>;</span> i <span style='color:#808030; '>&lt;</span> data<span style='color:#808030; '>.</span>getNumberOfRows<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span> i<span style='color:#808030; '>++</span><span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span>
+                      delta += amplitude * Math<span style='color:#008c00; '>.</span><span style='color:#800000; font-weight:bold; '>random</span>() - amplitude / <span style='color:#008c00; '>2</span>;
+                      <span style='color:#800000; font-weight:bold; '>if</span> <span style='color:#808030; '>(</span>Math<span style='color:#808030; '>.</span><span style='color:#800000; font-weight:bold; '>abs</span><span style='color:#808030; '>(</span>delta<span style='color:#808030; '>)</span> <span style='color:#808030; '>></span> maxDelta<span style='color:#808030; '>)</span> delta <span style='color:#808030; '>=</span> Math<span style='color:#808030; '>.</span>signum<span style='color:#808030; '>(</span>delta<span style='color:#808030; '>)</span> <span style='color:#808030; '>*</span> maxDelta<span style='color:#800080; '>;</span>
+                      <span style='color:#800000; font-weight:bold; '>var</span> newValue <span style='color:#808030; '>=</span> lastValue <span style='color:#808030; '>+</span> delta<span style='color:#800080; '>;</span>
+                      data<span style='color:#808030; '>.</span>setCell<span style='color:#808030; '>(</span>i<span style='color:#808030; '>,</span> <span style='color:#008c00; '>0</span><span style='color:#808030; '>,</span> i<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+                      data<span style='color:#808030; '>.</span>setCell<span style='color:#808030; '>(</span>i<span style='color:#808030; '>,</span> <span style='color:#008c00; '>1</span><span style='color:#808030; '>,</span> newValue<span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+                      lastValue <span style='color:#808030; '>=</span> newValue<span style='color:#800080; '>;</span> 
+                  <span style='color:#800080; '>}</span>
+                  <span style='color:#800000; font-weight:bold; '>return</span> data<span style='color:#800080; '>;</span>                 
+              <span style='color:#800080; '>}</span>
+        
+              <span style='color:#800000; font-weight:bold; '>function</span> drawVisualization<span style='color:#808030; '>(</span><span style='color:#808030; '>)</span> <span style='color:#800080; '>{</span>
+                
+                  <span style='color:#696969; '>// Generate the data</span>
+                  <span style='color:#800000; font-weight:bold; '>var</span> data <span style='color:#808030; '>=</span> generateData<span style='color:#808030; '>(</span><span style='color:#008c00; '>200</span><span style='color:#808030; '>,</span> <span style='color:#008c00; '>20</span><span style='color:#808030; '>,</span> <span style='color:#008c00; '>15</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span>
+                  
+                  <span style='color:#696969; '>// Instantiate the timeline object </span>
+                  <span style='color:#800000; font-weight:bold; '>var</span> vis <span style='color:#808030; '>=</span> <span style='color:#800000; font-weight:bold; '>new</span> pivot<span style='color:#808030; '>.</span>StackZoomTimeline<span style='color:#808030; '>(</span>document<span style='color:#808030; '>.</span>getElementById<span style='color:#808030; '>(</span><span style='color:#0000e6; '>'timeline'</span><span style='color:#808030; '>)</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span> 
+         
+                  <span style='color:#696969; '>// Draw the visualization</span>
+                  vis<span style='color:#808030; '>.</span>draw<span style='color:#808030; '>(</span>data<span style='color:#808030; '>,</span> <span style='color:#800080; '>{</span> width<span style='color:#800080; '>:</span> <span style='color:#008c00; '>1200</span><span style='color:#808030; '>,</span> height <span style='color:#800080; '>:</span> <span style='color:#008c00; '>600</span> <span style='color:#800080; '>}</span><span style='color:#808030; '>)</span><span style='color:#800080; '>;</span> 
+              <span style='color:#800080; '>}</span>
+          <span style='color:#a65700; '>&lt;/</span><span style='color:#800000; font-weight:bold; '>script</span><span style='color:#a65700; '>></span>     
+    <span style='color:#a65700; '>&lt;/</span><span style='color:#800000; font-weight:bold; '>head</span><span style='color:#a65700; '>></span>
+    <span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>body</span><span style='color:#a65700; '>></span>        
+        <span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>h1</span><span style='color:#274796; '> </span><span style='color:#074726; '>class</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"header"</span><span style='color:#a65700; '>></span>Stack Zooming: Randomized Data<span style='color:#a65700; '>&lt;/</span><span style='color:#800000; font-weight:bold; '>h1</span><span style='color:#a65700; '>></span>
+        <span style='color:#a65700; '>&lt;</span><span style='color:#800000; font-weight:bold; '>div</span><span style='color:#274796; '> </span><span style='color:#074726; '>id</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"timeline"</span><span style='color:#a65700; '>></span><span style='color:#a65700; '>&lt;/</span><span style='color:#800000; font-weight:bold; '>div</span><span style='color:#a65700; '>></span>
+    <span style='color:#a65700; '>&lt;/</span><span style='color:#800000; font-weight:bold; '>body</span><span style='color:#a65700; '>></span>
+<span style='color:#a65700; '>&lt;/</span><span style='color:#800000; font-weight:bold; '>html</span><span style='color:#a65700; '>></span>
+</pre></div>
+			
+			<div class="footer">
+				Created by Waqas Javed and Niklas Elmqvist (<a href="http://www.purdue.edu">Purdue University</a>).
+			</div>
+		</div>
+        
+    </body>
+</html>
+
